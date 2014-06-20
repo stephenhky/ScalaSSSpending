@@ -14,4 +14,8 @@ class SpendingEntry {
   var comment : String = ""
   var individual : String = ""
   var paymentMethod : String = ""
+
+  def setField(attribute : String, value : String) = {
+
+  }
 }

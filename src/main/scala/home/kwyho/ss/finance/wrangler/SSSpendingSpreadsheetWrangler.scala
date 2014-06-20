@@ -13,7 +13,7 @@ import home.kwyho.ss.finance.dataentry.SpendingEntry
  */
 class SSSpendingSpreadsheetWrangler(ssEntry : SpreadsheetEntry) {
   val spreadsheetEntry = ssEntry
-  val columnHashMap : Map[String, Int] = SSSpendDAO.DataColumnHashMap
+  val columnHashMap : Map[Int, String] = SSSpendDAO.DataColumnHashMap
 
   def getWorksheetSpendingData(worksheet : WorksheetEntry) : Any = {
     val cellFeedUrl : URL = worksheet getCellFeedUrl
