@@ -1,10 +1,9 @@
 package home.kwyho.google.ss.finance;
 
 import home.kwyho.google.ss.finance.authenticate.GoogleSpreadsheetAuthentication;
-import home.kwyho.ss.finance.daoobj.DataObjects;
+import home.kwyho.ss.finance.daoobj.SSSpendDAO;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +25,8 @@ public class SpreadsheetSSSpending {
 	private HashMap<String, WorksheetEntry> hashWorksheets;
 	private WorksheetEntry summaryWorksheet;
 	private String year;
-    private List<String> calendarMonths = JavaConversions.asJavaList(DataObjects.calendarMonths());
-    private Map<String, String> spreadsheetIDHash = JavaConversions.asJavaMap(DataObjects.yearHash());
+    private List<String> calendarMonths = JavaConversions.asJavaList(SSSpendDAO.calendarMonths());
+    private Map<String, String> spreadsheetIDHash = JavaConversions.asJavaMap(SSSpendDAO.yearHash());
 	
 	public SpreadsheetSSSpending(FeedURLFactory factory, SpreadsheetFeed feed,
 			SpreadsheetService service, String year) {

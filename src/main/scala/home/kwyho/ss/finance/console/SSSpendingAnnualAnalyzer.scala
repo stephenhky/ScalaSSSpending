@@ -1,6 +1,6 @@
 package home.kwyho.ss.finance.console
 
-import home.kwyho.ss.finance.daoobj.DataObjects
+import home.kwyho.ss.finance.daoobj.SSSpendDAO
 import home.kwyho.google.ss.finance.SpreadsheetSSSpending
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry
 import home.kwyho.ss.finance.wrangler.SSSpendingSpreadsheetWrangler
@@ -13,7 +13,7 @@ object SSSpendingAnnualAnalyzer {
     var gmailAddress : String = readLine("GMail address = ? ")
     var password : String = readLine("Password = ? ")
     var year : String = readLine("Year = ? ")
-    if (!DataObjects.yearHash.contains(year)) {
+    if (!SSSpendDAO.yearHash.contains(year)) {
       System.exit(1)
     }
     val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, password, year)
