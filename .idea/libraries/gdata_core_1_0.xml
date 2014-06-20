@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="gdata-core-1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Java Libraries/gdata/java/lib/gdata-core-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Java Libraries/gdata/java/lib/gdata-docs-3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Java Libraries/gdata/java/lib/gdata-client-1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../Java Libraries/gdata/java/lib/gdata-spreadsheet-3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

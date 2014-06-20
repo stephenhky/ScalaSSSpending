@@ -79,7 +79,7 @@ public class SpreadsheetSSSpending {
 			worksheets = ssSpendingSpreadsheet.getWorksheets();
 			for (WorksheetEntry worksheet: worksheets) {
 				String sheetName = worksheet.getTitle().getPlainText();
-				if (Arrays.asList(calendarMonths).contains(sheetName)) {
+				if (calendarMonths.contains(sheetName)) {
 					hashWorksheets.put(sheetName, worksheet);
 				} else if (sheetName.equals("Summary")) {
 					summaryWorksheet = worksheet;

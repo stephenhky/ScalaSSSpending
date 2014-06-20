@@ -108,6 +108,10 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="gdata-core-1.0" level="project" />
+    <orderEntry type="library" name="stanford-postagger" level="project" />
+    <orderEntry type="library" name="lingpipe-4.1.0" level="project" />
+    <orderEntry type="library" name="guava-11.0.2" level="project" />
   </component>
 </module>
 
