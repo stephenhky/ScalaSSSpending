@@ -15,23 +15,21 @@ class SSSpendingSpreadsheetWrangler(ssEntry : SpreadsheetEntry) {
   val spreadsheetEntry = ssEntry
   val columnHashMap : Map[Int, String] = SSSpendDAO.DataColumnHashMap
 
-  def getWorksheetSpendingData(worksheet : WorksheetEntry) : Any = {
+  def getWorksheetSpendingData(worksheet : WorksheetEntry) : IndexedSeq[SpendingEntry] = {
     val cellFeedUrl : URL = worksheet getCellFeedUrl
     val rowCount : Int = worksheet getRowCount
 
     var cellQuery : CellQuery = new CellQuery(cellFeedUrl)
-    cellQuery setMinimumRow(2)
+    cellQuery setMinimumRow(3)
     cellQuery setMaximumRow(rowCount)
-    cellQuery setMinimumCol(columnHashMap("Date"))
-    cellQuery setMaximumCol(columnHashMap("PaymentMethod"))
+    cellQuery setMinimumCol(columnHashMap.keySet.min)
+    cellQuery setMaximumCol(columnHashMap.keySet.max)
     val feed : CellFeed = ssEntry.getService().query(cellQuery, classOf[CellFeed])
     val cellEntries : Buffer[CellEntry] = feed getEntries
 
     val entries : IndexedSeq[SpendingEntry] = (3 to rowCount).map(idx => new SpendingEntry)
-    cellEntries.foreach( cellEntry => {
-      val cell : Cell = cellEntry getCell
-      val dataIdx = cell.getRow - 2
+    cellEntries.foreach( cellEntry => entries(cellEntry.getCell.getRow-2).setField(cellEntry getCell))
 
-    })
+    entries
   }
 }

@@ -19,6 +19,7 @@ object SSSpendingAnnualAnalyzer {
     val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, password, year)
     val spreadSheet : SpreadsheetEntry = ssSpendServiceWrapper.retrieveSSSpendingSpreadsheet()
     val wrangler : SSSpendingSpreadsheetWrangler = new SSSpendingSpreadsheetWrangler(spreadSheet)
-    wrangler getWorksheetSpendingData(ssSpendServiceWrapper getWorksheet("January"))
+    val entries = wrangler getWorksheetSpendingData(ssSpendServiceWrapper getWorksheet("January"))
+    entries.foreach(println)
   }
 }
