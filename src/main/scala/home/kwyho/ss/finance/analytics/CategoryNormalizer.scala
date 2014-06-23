@@ -13,9 +13,11 @@ import com.aliasi.tokenizer.PorterStemmerTokenizerFactory
  */
 class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv") {
   val crosswalkFile : File = new File(crosswalkFileName)
-  val crosswalkHashMap : Map[String, String] = Map()
+  var crosswalkHashMap : Map[String, String] = Map()
+  var stemmedCategoriesHashMap : Map[String, List[String]] = Map()
   importXWalk(crosswalkFile)
   val tagger : MaxentTagger = new MaxentTagger("english-left3words-distsim.tagger")
+
 
   def importXWalk(crosswalkFile : File) = {
     val reader : CSVReader = new CSVReader(new FileReader(crosswalkFile))
@@ -25,4 +27,15 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
 
   def stemWords(word : String) : String =
     word split(" ") map( token => PorterStemmerTokenizerFactory.stem(token)) reduce( (s1, s2) => s1+" "+s2) trim
+
+  def importAllCategories(categories : List[String]) = {
+    categories.foreach( category => {
+      val stemmedCategory = stemWords(category) toLowerCase
+      if (stemmedCategoriesHashMap contains(stemmedCategory)) {
+        stemmedCategoriesHashMap(stemmedCategory) += category
+      } else {
+        stemmedCategoriesHashMap += (stemmedCategory -> List(category))
+      }
+    })
+  }
 }
