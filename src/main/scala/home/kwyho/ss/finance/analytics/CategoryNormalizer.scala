@@ -38,4 +38,37 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
       }
     })
   }
+
+  def chooseBestWord(words : List[String]) : String = {
+    def getTagLabels(word : String) : List[String] = {
+      word.split(" ").toList.map( token => {
+        val taggedTokens : String = tagger tagString(token)
+        taggedTokens substring(taggedTokens.lastIndexOf('_')+1)
+      })
+    }
+
+    def isCapitalized(word : String) : Boolean =
+      word.split(" ").map( token => Character.isUpperCase(token charAt(0))).reduce( (b1, b2) => b1 & b2)
+
+    def score(word : String) : Int = {
+      val tagLabels : List[String] = getTagLabels(word)
+      var score : Int = 0
+      if (tagLabels contains("VBG")) score += 1  // Rule 1: prefer '-ing' ending
+      if (isCapitalized(word)) score += 1  // Rule 2: prefer capitalized start
+      if ((tagLabels contains("NN")) | (tagLabels contains("NNP"))) score += 1  // Rule 3: prefer singular
+      score
+    }
+
+    words maxBy( score)
+  }
+
+  def normalize(category : String) : String = {
+    var stemmedCategory : String = stemWords(category toLowerCase)
+    if (crosswalkHashMap contains(stemmedCategory)) stemmedCategory = crosswalkHashMap(stemmedCategory)
+    if (stemmedCategoriesHashMap contains(stemmedCategory)) {
+      chooseBestWord(stemmedCategoriesHashMap(stemmedCategory))
+    } else {
+      category
+    }
+  }
 }
