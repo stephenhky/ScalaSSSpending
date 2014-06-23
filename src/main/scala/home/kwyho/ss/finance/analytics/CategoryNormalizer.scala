@@ -2,7 +2,6 @@ package home.kwyho.ss.finance.analytics
 
 import java.io.{FileReader, File}
 import au.com.bytecode.opencsv.CSVReader
-import scala.collection.mutable.Buffer
 import scala.collection.JavaConversions._
 import scala.collection.mutable.Map
 import edu.stanford.nlp.tagger.maxent.MaxentTagger
