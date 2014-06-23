@@ -17,7 +17,6 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
   importXWalk(crosswalkFile)
   val tagger : MaxentTagger = new MaxentTagger("english-left3words-distsim.tagger")
 
-
   def importXWalk(crosswalkFile : File) = {
     val reader : CSVReader = new CSVReader(new FileReader(crosswalkFile))
     reader.readAll().foreach( line => crosswalkHashMap += (line(0) -> line(1)))
@@ -39,12 +38,11 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
   }
 
   def chooseBestWord(words : List[String]) : String = {
-    def getTagLabels(word : String) : List[String] = {
+    def getTagLabels(word : String) : List[String] =
       word.split(" ").toList.map( token => {
         val taggedTokens : String = tagger tagString(token)
         taggedTokens substring(taggedTokens.lastIndexOf('_')+1)
       })
-    }
 
     def isCapitalized(word : String) : Boolean =
       word.split(" ").map( token => Character.isUpperCase(token charAt(0))).reduce( (b1, b2) => b1 & b2)
