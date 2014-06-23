@@ -19,14 +19,10 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
 
   def importXWalk(crosswalkFile : File) = {
     val reader : CSVReader = new CSVReader(new FileReader(crosswalkFile))
-    val lines : Buffer[Array[String]] = reader.readAll()
+    reader.readAll().foreach( line => crosswalkHashMap += (line(0) -> line(1)))
     reader close()
-    lines.foreach( line => crosswalkHashMap += (line(0) -> line(1)))
   }
 
-  def stemWords(word : String) : String = {
-    val tokens : Array[String] = word.split(" ")
-    val stemmedTokens = tokens.map( token => PorterStemmerTokenizerFactory.stem(token))
-    stemmedTokens reduce( (s1, s2) => s1+" "+s2) trim
-  }
+  def stemWords(word : String) : String =
+    word split(" ") map( token => PorterStemmerTokenizerFactory.stem(token)) reduce( (s1, s2) => s1+" "+s2) trim
 }
