@@ -15,7 +15,7 @@ class SSSpendingSpreadsheetWrangler(ssEntry : SpreadsheetEntry) {
   val spreadsheetEntry = ssEntry
   val columnHashMap : Map[Int, String] = SSSpendDAO.DataColumnHashMap
 
-  def getWorksheetSpendingData(worksheet : WorksheetEntry) : IndexedSeq[SpendingEntry] = {
+  def getWorksheetSpendingData(worksheet : WorksheetEntry) : List[SpendingEntry] = {
     val cellFeedUrl : URL = worksheet getCellFeedUrl
     val rowCount : Int = worksheet getRowCount
 
@@ -30,6 +30,6 @@ class SSSpendingSpreadsheetWrangler(ssEntry : SpreadsheetEntry) {
     val entries : IndexedSeq[SpendingEntry] = (3 to rowCount).map(idx => new SpendingEntry)
     cellEntries.foreach( cellEntry => entries(cellEntry.getCell.getRow-2).setField(cellEntry getCell))
 
-    entries
+    entries.toList
   }
 }
