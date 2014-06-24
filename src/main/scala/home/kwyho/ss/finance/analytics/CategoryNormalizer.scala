@@ -28,9 +28,10 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
 
   def importAllCategories(categories : List[String]) = {
     categories.foreach( category => {
-      val stemmedCategory = stemWords(category) toLowerCase
-      if (stemmedCategoriesHashMap contains(stemmedCategory)) {
-        stemmedCategoriesHashMap(stemmedCategory) += category
+      val stemmedCategory : String = stemWords(category).toLowerCase()
+      if (stemmedCategoriesHashMap.contains(stemmedCategory)) {
+        val categories : List[String] = stemmedCategoriesHashMap(stemmedCategory)
+        stemmedCategoriesHashMap(stemmedCategory) = categories ::: List(category)
       } else {
         stemmedCategoriesHashMap += (stemmedCategory -> List(category))
       }
@@ -44,8 +45,10 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
         taggedTokens substring(taggedTokens.lastIndexOf('_')+1)
       })
 
-    def isCapitalized(word : String) : Boolean =
+    def isCapitalized(word : String) : Boolean = if (word.length > 0) {
       word.split(" ").map( token => Character.isUpperCase(token charAt(0))).reduce( (b1, b2) => b1 & b2)
+    } else {false}
+
 
     def score(word : String) : Int = {
       val tagLabels : List[String] = getTagLabels(word)
