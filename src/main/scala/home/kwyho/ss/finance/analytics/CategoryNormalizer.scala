@@ -38,7 +38,7 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
     })
   }
 
-  def chooseBestWord(words : List[String]) : String = {
+  def score(word : String) : Int = {
     def getTagLabels(word : String) : List[String] =
       word.split(" ").toList.map( token => {
         val taggedTokens : String = tagger tagString(token)
@@ -49,18 +49,15 @@ class CategoryNormalizer(crosswalkFileName : String = "JSSSpendCatCrosswalk.csv"
       word.split(" ").map( token => Character.isUpperCase(token charAt(0))).reduce( (b1, b2) => b1 & b2)
     } else {false}
 
-
-    def score(word : String) : Int = {
-      val tagLabels : List[String] = getTagLabels(word)
-      var score : Int = 0
-      if (tagLabels contains("VBG")) score += 1  // Rule 1: prefer '-ing' ending
-      if (isCapitalized(word)) score += 1  // Rule 2: prefer capitalized start
-      if ((tagLabels contains("NN")) | (tagLabels contains("NNP"))) score += 1  // Rule 3: prefer singular
-      score
-    }
-
-    words maxBy( score)
+    val tagLabels : List[String] = getTagLabels(word)
+    var score : Int = 0
+    if (tagLabels contains("VBG")) score += 1  // Rule 1: prefer '-ing' ending
+    if (isCapitalized(word)) score += 1  // Rule 2: prefer capitalized start
+    if ((tagLabels contains("NN")) | (tagLabels contains("NNP"))) score += 1  // Rule 3: prefer singular
+    score
   }
+
+  def chooseBestWord(words : List[String]) : String = words maxBy( score)
 
   def normalize(category : String) : String = {
     var stemmedCategory : String = stemWords(category toLowerCase)
