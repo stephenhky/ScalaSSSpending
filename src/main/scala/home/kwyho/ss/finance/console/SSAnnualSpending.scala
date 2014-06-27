@@ -5,6 +5,7 @@ import home.kwyho.google.ss.finance.SpreadsheetSSSpending
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry
 import home.kwyho.ss.finance.wrangler.SSSpendingSpreadsheetWrangler
 import home.kwyho.ss.finance.analytics.{CategoryNormalizer, SpendingAnalyzer}
+import scala.collection.mutable.Map
 
 /**
  * Created by hok1 on 6/20/14.
@@ -12,8 +13,11 @@ import home.kwyho.ss.finance.analytics.{CategoryNormalizer, SpendingAnalyzer}
 object SSAnnualSpending {
   def main(args : Array[String]) {
     // User's input
+//    val console = System console()
     var gmailAddress : String = readLine("GMail address = ? ")
     var password : String = readLine("Password = ? ")
+//    println("Password = ? ")
+//    var password : String = new String(console readPassword())
     var year : String = readLine("Year = ? ")
     if (!SSSpendDAO.yearHash.contains(year)) {
       System.exit(1)
@@ -34,10 +38,11 @@ object SSAnnualSpending {
     monthlyEntries.foreach( entries => entries.foreach( entry => entry.category = normalizer.normalize(entry.category)))
 
     // Outputting results
+    val monthlyCategorizedSpendings : List[Map[String, Double]] = (0 to SSSpendDAO.calendarMonths.size-1).map( monthIdx =>
+      SpendingAnalyzer.analyzeCategorizedSpending(monthlyEntries(monthIdx))).toList
     (0 to SSSpendDAO.calendarMonths.size-1).foreach( monthIdx => {
       println(SSSpendDAO.calendarMonths(monthIdx))
-      val entries = monthlyEntries(monthIdx)
-      val categorizedSpendings = SpendingAnalyzer.analyzeCategorizedSpending(entries)
+      val categorizedSpendings = monthlyCategorizedSpendings(monthIdx)
       categorizedSpendings.keySet.foreach( category => {
         println("\t"+category+" : "+categorizedSpendings(category))
       })
