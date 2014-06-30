@@ -47,5 +47,6 @@ object SSAnnualSpending {
         println("\t"+category+" : "+categorizedSpendings(category))
       })
     })
+    wrangler writeSummaryToGoogleSpreadsheet( ssSpendServiceWrapper getSummaryWorksheet, monthlyCategorizedSpendings)
   }
 }
