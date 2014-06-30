@@ -23,7 +23,7 @@ object SpendingAnalyzer {
     val allCategories : Set[String] = catSpend1.keySet.toSet | catSpend2.keySet.toSet
     var mergedCategorizedSpending : Map[String, Double] = Map()
     def getSpending(category : String, catSpend : Map[String, Double]) : Double
-      = if (catSpend.contains(category)) {catSpend1(category)} else {0.0}
+      = if (catSpend.contains(category)) {catSpend(category)} else {0.0}
 
     allCategories.foreach( category =>
       mergedCategorizedSpending(category) = getSpending(category, catSpend1)+getSpending(category, catSpend2))
