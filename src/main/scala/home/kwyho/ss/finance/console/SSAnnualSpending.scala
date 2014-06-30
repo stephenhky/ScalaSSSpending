@@ -13,31 +13,35 @@ import scala.collection.mutable.Map
 object SSAnnualSpending {
   def main(args : Array[String]) {
     // User's input
-//    val console = System console()
+    val console = System console()
     var gmailAddress : String = readLine("GMail address = ? ")
-    var password : String = readLine("Password = ? ")
-//    println("Password = ? ")
-//    var password : String = new String(console readPassword())
+//    var password : String = readLine("Password = ? ")
+    print("Password = ? ")
+    var password : String = new String(console readPassword())
     var year : String = readLine("Year = ? ")
     if (!SSSpendDAO.yearHash.contains(year)) {
       System.exit(1)
     }
 
     // Connecting to Google
+    println("Connecting to Google...")
     val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, password, year)
 
     // Retrieving data and wrangling
+    println("Retrieving data...")
     val spreadSheet : SpreadsheetEntry = ssSpendServiceWrapper.retrieveSSSpendingSpreadsheet()
     val wrangler : SSSpendingSpreadsheetWrangler = new SSSpendingSpreadsheetWrangler(spreadSheet)
     val monthlyEntries = SSSpendDAO.calendarMonths.map(
       month => wrangler getWorksheetSpendingData(ssSpendServiceWrapper getWorksheet(month)))
 
     // Language processing
+    println("Natural language processing...")
     val normalizer : CategoryNormalizer = new CategoryNormalizer()
     monthlyEntries.foreach( entries => normalizer.importAllCategories(entries.map( entry => entry.category)))
     monthlyEntries.foreach( entries => entries.foreach( entry => entry.category = normalizer.normalize(entry.category)))
 
     // Outputting results
+    println("Calculating...")
     val monthlyCategorizedSpendings : List[Map[String, Double]] = (0 to SSSpendDAO.calendarMonths.size-1).map( monthIdx =>
       SpendingAnalyzer.analyzeCategorizedSpending(monthlyEntries(monthIdx))).toList
     (0 to SSSpendDAO.calendarMonths.size-1).foreach( monthIdx => {
@@ -47,6 +51,11 @@ object SSAnnualSpending {
         println("\t"+category+" : "+categorizedSpendings(category))
       })
     })
+
+    // Writing summary files
+    println("Updating Summary...")
     wrangler writeSummaryToGoogleSpreadsheet( ssSpendServiceWrapper getSummaryWorksheet, monthlyCategorizedSpendings)
+
+    println("Done.")
   }
 }
