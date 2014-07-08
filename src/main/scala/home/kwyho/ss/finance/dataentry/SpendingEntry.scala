@@ -17,6 +17,10 @@ class SpendingEntry {
   var individual : String = ""
   var paymentMethod : String = ""
 
+  def isEmpty : Boolean = {
+    place=="" & category=="" & city=="" & debit==0 & comment=="" & individual=="" & paymentMethod==""
+  }
+
   def setField(cell : Cell) = {
     val attribute : String = SSSpendDAO DataColumnHashMap(cell getCol)
     attribute match {

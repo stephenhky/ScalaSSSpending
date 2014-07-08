@@ -31,7 +31,7 @@ class SSSpendingSpreadsheetWrangler(ssEntry : SpreadsheetEntry) {
     val entries : IndexedSeq[SpendingEntry] = (3 to rowCount).map(idx => new SpendingEntry)
     cellEntries.foreach( cellEntry => entries(cellEntry.getCell.getRow-2).setField(cellEntry getCell))
 
-    entries.toList
+    entries.filter(!_.isEmpty).toList
   }
 
   def writeSummaryToGoogleSpreadsheet(summaryWorksheet : WorksheetEntry,
