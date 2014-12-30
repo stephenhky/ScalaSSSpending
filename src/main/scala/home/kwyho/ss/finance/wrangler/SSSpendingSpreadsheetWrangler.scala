@@ -57,9 +57,11 @@ class SSSpendingSpreadsheetWrangler(ssEntry : SpreadsheetEntry) {
       colIdx match {
         case 2 => {
           entry changeInputValueLocal( sortedAnnualCategorizedSpendings(rowIdx-3)._1)
+          entry update()
         }
         case 15 => {
           entry changeInputValueLocal( sortedAnnualCategorizedSpendings(rowIdx-3)._2.toString)
+          entry update()
         }
         case num => {
           val category : String = sortedAnnualCategorizedSpendings(rowIdx-3)._1
@@ -69,10 +71,9 @@ class SSSpendingSpreadsheetWrangler(ssEntry : SpreadsheetEntry) {
             0
           }
           entry changeInputValueLocal( spending.toString)
+          entry update()
         }
       }
     })
-
-    cellEntries.foreach( _.update())
   }
 }
