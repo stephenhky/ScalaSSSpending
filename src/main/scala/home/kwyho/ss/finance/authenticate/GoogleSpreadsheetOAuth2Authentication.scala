@@ -11,6 +11,8 @@ import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 
 // New way of authentication. Refer to https://stackoverflow.com/questions/30483601/create-spreadsheet-using-google-spreadsheet-api-in-google-drive-in-java?newreg=e6435ad6891a4c1f8bbe76f4fb22fd64
+// http://stackoverflow.com/questions/13257163/java-google-api-analytics-unable-to-obtain-new-access-token-using-refresh
+// https://github.com/google/google-api-java-client#Authorization_Code_Flow
 object GoogleSpreadsheetOAuth2Authentication {
   def login(username : String, password : String) : SpreadsheetService = {
     val httpTransport : HttpTransport = new NetHttpTransport()
@@ -26,5 +28,9 @@ object GoogleSpreadsheetOAuth2Authentication {
     val service : SpreadsheetService = new SpreadsheetService("ScalaSSSpend")
     service.setOAuth2Credentials(credential)
     service
+  }
+
+  def login(username : String, password : String, p12file : File) : SpreadsheetService = {
+    null
   }
 }
