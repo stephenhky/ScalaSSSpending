@@ -1,6 +1,6 @@
 package home.kwyho.google.ss.finance;
 
-import home.kwyho.google.ss.finance.authenticate.GoogleSpreadsheetAuthentication;
+import home.kwyho.ss.finance.authenticate.GoogleSpreadsheetOAuth2Authentication;
 import home.kwyho.ss.finance.daoobj.SSSpendDAO;
 
 import java.io.IOException;
@@ -25,12 +25,11 @@ public class SpreadsheetSSSpending {
 	private HashMap<String, WorksheetEntry> hashWorksheets;
 	private WorksheetEntry summaryWorksheet;
 	private String year;
-    private List<String> calendarMonths = JavaConversions.asJavaList(SSSpendDAO.calendarMonths());
-    private Map<String, String> spreadsheetIDHash = JavaConversions.asJavaMap(SSSpendDAO.yearHash());
+    private List<String> calendarMonths = SSSpendDAO.calendarMonthsInJava();
+    private Map<String, String> spreadsheetIDHash = SSSpendDAO.yearHashInJava();
 	
 	public SpreadsheetSSSpending(FeedURLFactory factory, SpreadsheetFeed feed,
 			SpreadsheetService service, String year) {
-		super();
 		this.factory = factory;
 		this.spreadsheetFeed = feed;
 		this.service = service;
@@ -40,7 +39,6 @@ public class SpreadsheetSSSpending {
 	}
 
 	public SpreadsheetSSSpending(SpreadsheetService service, String year) throws IOException, ServiceException {
-		super();
 		this.service = service;
 		this.year = year;
 		factory = FeedURLFactory.getDefault();
@@ -50,7 +48,8 @@ public class SpreadsheetSSSpending {
 	}
 	
 	public SpreadsheetSSSpending(String username, String password, String year) throws AuthenticationException, IOException, ServiceException {
-		this(GoogleSpreadsheetAuthentication.login(username, password), year);
+//		this(GoogleSpreadsheetAuthentication.login(username, password), year);
+		this(GoogleSpreadsheetOAuth2Authentication.login(username, password), year);
 	}
 	
 	public SpreadsheetService getService() {

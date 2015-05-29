@@ -1,5 +1,7 @@
 package home.kwyho.ss.finance.daoobj
 
+import scala.collection.JavaConverters._
+
 /**
  * Created by hok1 on 6/19/14.
  */
@@ -11,4 +13,8 @@ object SSSpendDAO {
     "October", "November", "December")
   val DataColumnHashMap : Map[Int, String] = Map(2 -> "Date", 3 -> "Place", 4 -> "Category", 5 -> "City", 6 -> "Debit",
     7 -> "Comment", 8 -> "Individual", 9 -> "PaymentMethod")
+
+  def yearHashInJava() = yearHash.asJava
+  def calendarMonthsInJava() = calendarMonths.asJava
+  def DataColumnHashMapInJava() = DataColumnHashMap.asJava
 }

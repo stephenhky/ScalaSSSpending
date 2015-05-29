@@ -15,9 +15,9 @@ object SSAnnualSpending {
     // User's input
     val console = System console()
     var gmailAddress : String = readLine("GMail address = ? ")
-//    var password : String = readLine("Password = ? ")
-    print("Password = ? ")
-    var password : String = new String(console readPassword())
+    var password : String = readLine("Password = ? ")
+//    print("Password = ? ")
+//    var password : String = new String(console readPassword())
     var year : String = readLine("Year = ? ")
     if (!SSSpendDAO.yearHash.contains(year)) {
       System.exit(1)
