@@ -1,6 +1,7 @@
 package home.kwyho.ss.finance.console
 
-import com.opencsv.CSVWriter
+
+import au.com.bytecode.opencsv.CSVWriter
 import home.kwyho.ss.finance.daoobj.SSSpendDAO
 import home.kwyho.google.ss.finance.SpreadsheetSSSpending
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry

@@ -1,7 +1,9 @@
 package home.kwyho.ss.finance.analytics
 
 import java.io.{FileReader, File}
-import com.opencsv.CSVReader
+
+
+import au.com.bytecode.opencsv.CSVReader
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.Map
