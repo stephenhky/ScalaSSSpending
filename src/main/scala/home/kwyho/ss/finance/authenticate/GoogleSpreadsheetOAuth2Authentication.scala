@@ -1,11 +1,9 @@
 package home.kwyho.ss.finance.authenticate
 
-import java.io.{InputStreamReader, File}
-import java.util.Collections
+import java.io.InputStreamReader
 
 import com.google.api.client.auth.oauth2.{Credential, AuthorizationCodeFlow}
 import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory
-import com.google.api.client.extensions.appengine.http.UrlFetchTransport
 import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeFlow, GoogleClientSecrets}
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson.JacksonFactory
@@ -18,6 +16,7 @@ import com.google.gdata.client.spreadsheet.SpreadsheetService
 // New way of authentication. Refer to https://stackoverflow.com/questions/30483601/create-spreadsheet-using-google-spreadsheet-api-in-google-drive-in-java?newreg=e6435ad6891a4c1f8bbe76f4fb22fd64
 // http://stackoverflow.com/questions/13257163/java-google-api-analytics-unable-to-obtain-new-access-token-using-refresh
 // https://github.com/google/google-api-java-client#Authorization_Code_Flow
+// Available scopes: https://developers.google.com/gmail/api/auth/scopes
 object GoogleSpreadsheetOAuth2Authentication {
 //  def login(username : String, password : String) : SpreadsheetService = {
 //    val httpTransport : HttpTransport = new NetHttpTransport()
@@ -39,7 +38,7 @@ object GoogleSpreadsheetOAuth2Authentication {
     val SCOPES = List("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds").asJava
 
     val jsonFactory : JsonFactory = new JacksonFactory()
-    val httpTransport : HttpTransport = new UrlFetchTransport()
+    val httpTransport : HttpTransport = new NetHttpTransport()
     val clientsSecrets : GoogleClientSecrets = GoogleClientSecrets
       .load(jsonFactory, new InputStreamReader(GoogleSpreadsheetOAuth2Authentication
                                                 .getClass
