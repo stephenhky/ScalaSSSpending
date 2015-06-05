@@ -13,9 +13,7 @@ import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
 import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
-import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
-import scala.collection.JavaConversions;
 
 public class SpreadsheetSSSpending {
 	private FeedURLFactory factory;
@@ -47,8 +45,7 @@ public class SpreadsheetSSSpending {
 		computeHashmap();
 	}
 	
-	public SpreadsheetSSSpending(String username, String password, String year) throws AuthenticationException, IOException, ServiceException {
-//		this(GoogleSpreadsheetAuthentication.login(username, password), year);
+	public SpreadsheetSSSpending(String username, String password, String year) throws IOException, ServiceException {
 		this(GoogleSpreadsheetOAuth2Authentication.login(username, password), year);
 	}
 	
