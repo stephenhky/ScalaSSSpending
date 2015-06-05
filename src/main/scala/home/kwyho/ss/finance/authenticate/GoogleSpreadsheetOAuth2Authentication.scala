@@ -1,6 +1,7 @@
 package home.kwyho.ss.finance.authenticate
 
-import java.io.InputStreamReader
+import java.io.{File, InputStream, InputStreamReader}
+import java.util
 
 import com.google.api.client.auth.oauth2.{Credential, AuthorizationCodeFlow}
 import com.google.api.client.extensions.appengine.datastore.AppEngineDataStoreFactory
@@ -8,7 +9,6 @@ import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeFlow
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson.JacksonFactory
 
-import scala.collection.JavaConverters._
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.gdata.client.spreadsheet.SpreadsheetService
@@ -18,37 +18,22 @@ import com.google.gdata.client.spreadsheet.SpreadsheetService
 // https://github.com/google/google-api-java-client#Authorization_Code_Flow
 // Available scopes: https://developers.google.com/gmail/api/auth/scopes
 object GoogleSpreadsheetOAuth2Authentication {
-//  def login(username : String, password : String) : SpreadsheetService = {
-//    val httpTransport : HttpTransport = new NetHttpTransport()
-//    val jsonFactory : JacksonFactory = new JacksonFactory()
-//    val SCOPES = List("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds").asJava
-//    val credential : GoogleCredential = new GoogleCredential.Builder()
-//      .setTransport(httpTransport)
-//      .setJsonFactory(jsonFactory)
-//      .setServiceAccountId(username)
-//      .setServiceAccountScopes(SCOPES)
-//      .setServiceAccountPrivateKeyFromP12File(new File("ScalaSSSpending-1b7c3965aa13.p12"))
-//      .build()
-//    val service : SpreadsheetService = new SpreadsheetService("ScalaSSSpend")
-//    service.setOAuth2Credentials(credential)
-//    service
-//  }
 
   def login(username : String, password : String) : SpreadsheetService = {
-    val SCOPES = List("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds").asJava
+    val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
 
     val jsonFactory : JsonFactory = new JacksonFactory()
     val httpTransport : HttpTransport = new NetHttpTransport()
-    val clientsSecrets : GoogleClientSecrets = GoogleClientSecrets
-      .load(jsonFactory, new InputStreamReader(GoogleSpreadsheetOAuth2Authentication
-                                                .getClass
-                                                .getResourceAsStream("ScalaSSSpending-b9fdae2be0c0.json")))
+
+    val jsonStream : InputStream = GoogleSpreadsheetOAuth2Authentication.getClass.getResourceAsStream("ScalaSSSpending-b9fdae2be0c0.json")
+    val clientsSecrets : GoogleClientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(jsonStream))
 
     val authorizationCodeFlow : AuthorizationCodeFlow = new GoogleAuthorizationCodeFlow.Builder(
       httpTransport, jsonFactory, clientsSecrets, SCOPES
-    ).setDataStoreFactory(new AppEngineDataStoreFactory()).build()
-
+    ).setAccessType("offline").setApprovalPrompt("auto").build()
+//      .setDataStoreFactory(AppEngineDataStoreFactory.getDefaultInstance)
     val credential : Credential = authorizationCodeFlow.loadCredential(username)
+
 
     val service : SpreadsheetService = new SpreadsheetService("ScalaSSSpend")
     service.setOAuth2Credentials(credential)
