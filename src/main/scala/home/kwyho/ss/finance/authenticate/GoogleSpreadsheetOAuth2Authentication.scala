@@ -31,19 +31,18 @@ object GoogleSpreadsheetOAuth2Authentication {
     val jsonFactory : JsonFactory = new JacksonFactory()
     val httpTransport : HttpTransport = new NetHttpTransport()
 
-    val jsonStream : InputStream = GoogleSpreadsheetOAuth2Authentication.getClass.getResourceAsStream("ScalaSSSpending-b9fdae2be0c0.json")
+    val jsonStream : InputStream = GoogleSpreadsheetOAuth2Authentication.getClass.getResourceAsStream("client_secret_32485935939-p43vo057gp5mdp9cu1k03qcfudk7lv2g.apps.googleusercontent.com.json")
     val clientsSecrets : GoogleClientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(jsonStream))
 
     val authorizationCodeFlow : AuthorizationCodeFlow = new GoogleAuthorizationCodeFlow.Builder(
       httpTransport, jsonFactory, clientsSecrets, SCOPES
     ).setAccessType("offline").setApprovalPrompt("auto").build()
-//    val url : String = authorizationCodeFlow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build()
-//    println(url)
-//    var code: String = readLine("code = ? ")
-//    val response : TokenResponse = authorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute()
-//    val credential : Credential = authorizationCodeFlow.loadCredential(username).setFromTokenResponse(response)
-    val app : AuthorizationCodeInstalledApp = new AuthorizationCodeInstalledApp(authorizationCodeFlow, new LocalServerReceiver())
-    val credential : Credential = app.authorize(username)
+    val url : String = authorizationCodeFlow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build()
+    println(url)
+    var code: String = readLine("code = ? ")
+    val response : TokenResponse = authorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute()
+    println(response)
+    val credential : Credential = authorizationCodeFlow.loadCredential(username).setFromTokenResponse(response)
 
     val service : SpreadsheetService = new SpreadsheetService("ScalaSSSpend")
     service.setOAuth2Credentials(credential)
