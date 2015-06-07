@@ -4,6 +4,8 @@ import java.io.{InputStream, InputStreamReader}
 import java.util
 
 import com.google.api.client.auth.oauth2.{TokenResponse, Credential, AuthorizationCodeFlow}
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.googleapis.auth.oauth2.{GoogleTokenResponse, GoogleAuthorizationCodeFlow, GoogleClientSecrets}
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.jackson.JacksonFactory
@@ -21,9 +23,10 @@ import com.google.gdata.client.spreadsheet.SpreadsheetService
 // Answer at bottom: http://stackoverflow.com/questions/12521385/how-to-authenticate-google-drive-without-requiring-the-user-to-copy-paste-auth-c
 object GoogleSpreadsheetOAuth2Authentication {
 
-  def login(username : String, password : String) : SpreadsheetService = {
+  def login(username : String) : SpreadsheetService = {
     val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
     val REDIRECT_URI : String = "http://localhost"
+//    val REDIRECT_URI : String = "urn:ietf:wg:oauth:2.0:oob"
 
     val jsonFactory : JsonFactory = new JacksonFactory()
     val httpTransport : HttpTransport = new NetHttpTransport()
@@ -34,12 +37,13 @@ object GoogleSpreadsheetOAuth2Authentication {
     val authorizationCodeFlow : AuthorizationCodeFlow = new GoogleAuthorizationCodeFlow.Builder(
       httpTransport, jsonFactory, clientsSecrets, SCOPES
     ).setAccessType("offline").setApprovalPrompt("auto").build()
-    val url : String = authorizationCodeFlow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build()
-    println(url)
-    var code: String = readLine("code = ? ")
-    val response : TokenResponse = authorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute()
-    val credential : Credential = authorizationCodeFlow.loadCredential(username).setFromTokenResponse(response)
-
+//    val url : String = authorizationCodeFlow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build()
+//    println(url)
+//    var code: String = readLine("code = ? ")
+//    val response : TokenResponse = authorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute()
+//    val credential : Credential = authorizationCodeFlow.loadCredential(username).setFromTokenResponse(response)
+    val app : AuthorizationCodeInstalledApp = new AuthorizationCodeInstalledApp(authorizationCodeFlow, new LocalServerReceiver())
+    val credential : Credential = app.authorize(username)
 
     val service : SpreadsheetService = new SpreadsheetService("ScalaSSSpend")
     service.setOAuth2Credentials(credential)

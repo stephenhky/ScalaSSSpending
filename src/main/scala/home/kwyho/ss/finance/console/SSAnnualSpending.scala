@@ -15,7 +15,7 @@ object SSAnnualSpending {
     // User's input
     val console = System console()
     var gmailAddress : String = readLine("GMail address = ? ")
-    var password : String = readLine("Password = ? ")
+//    var password : String = readLine("Password = ? ")
 //    print("Password = ? ")
 //    var password : String = new String(console readPassword())
     var year : String = readLine("Year = ? ")
@@ -25,7 +25,7 @@ object SSAnnualSpending {
 
     // Connecting to Google
     println("Connecting to Google...")
-    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, password, year)
+    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, year)
 
     // Retrieving data and wrangling
     println("Retrieving data...")

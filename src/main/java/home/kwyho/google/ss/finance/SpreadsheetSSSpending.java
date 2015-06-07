@@ -45,8 +45,8 @@ public class SpreadsheetSSSpending {
 		computeHashmap();
 	}
 	
-	public SpreadsheetSSSpending(String username, String password, String year) throws IOException, ServiceException {
-		this(GoogleSpreadsheetOAuth2Authentication.login(username, password), year);
+	public SpreadsheetSSSpending(String username, String year) throws IOException, ServiceException {
+		this(GoogleSpreadsheetOAuth2Authentication.login(username), year);
 	}
 	
 	public SpreadsheetService getService() {

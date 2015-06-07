@@ -114,7 +114,8 @@
     <orderEntry type="library" name="opencsv-2.3" level="project" />
     <orderEntry type="library" name="SBT:: scala-compiler-bundle:2.10.2" level="project" />
     <orderEntry type="library" name="stanford-postagger" level="project" />
-    <orderEntry type="library" name="google-http-client-1.20.0" level="project" />
-    <orderEntry type="library" name="appengine-api-1.0-sdk-1.2.0" level="project" />
+    <orderEntry type="library" name="libs" level="project" />
+    <orderEntry type="library" name="google-api" level="project" />
+    <orderEntry type="library" name="servlet-api-2.5" level="project" />
   </component>
 </module>

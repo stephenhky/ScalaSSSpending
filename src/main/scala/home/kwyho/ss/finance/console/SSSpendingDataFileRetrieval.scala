@@ -28,7 +28,7 @@ object SSSpendingDataFileRetrieval {
 
     // Connecting to Google
     println("Connecting to Google...")
-    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, password, year)
+    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, year)
 
     // Retrieving data and wrangling
     println("Retrieving data...")
