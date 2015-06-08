@@ -14,12 +14,15 @@ import java.io.{File, FileWriter}
  */
 object SSSpendingDataFileRetrieval {
   def main(args : Array[String]) {
+    // Args
+    if (!(args.length<1)) {
+      System.out.println("Need client secret file.")
+    }
+    val clientSecretFile : File = new File(args(0))
+
     // User's input
     val console = System console()
     var gmailAddress : String = readLine("GMail address = ? ")
-//    var password : String = readLine("Password = ? ")
-    print("Password = ? ")
-    var password : String = new String(console readPassword())
     var year : String = readLine("Year = ? ")
     if (!SSSpendDAO.yearHash.contains(year)) {
       System.exit(1)
@@ -28,7 +31,7 @@ object SSSpendingDataFileRetrieval {
 
     // Connecting to Google
     println("Connecting to Google...")
-    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, year)
+    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, clientSecretFile, year)
 
     // Retrieving data and wrangling
     println("Retrieving data...")

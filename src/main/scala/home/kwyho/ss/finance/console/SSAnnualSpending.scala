@@ -1,5 +1,7 @@
 package home.kwyho.ss.finance.console
 
+import java.io.File
+
 import home.kwyho.ss.finance.daoobj.SSSpendDAO
 import home.kwyho.google.ss.finance.SpreadsheetSSSpending
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry
@@ -12,6 +14,13 @@ import scala.collection.mutable.Map
  */
 object SSAnnualSpending {
   def main(args : Array[String]) {
+    // Args
+    if (args.length<1) {
+      System.out.println("Need client secret file.")
+      System.exit(1)
+    }
+    val clientSecretFile : File = new File(args(0))
+
     // User's input
     val console = System console()
     var gmailAddress : String = readLine("GMail address = ? ")
@@ -22,7 +31,7 @@ object SSAnnualSpending {
 
     // Connecting to Google
     println("Connecting to Google...")
-    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, year)
+    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, clientSecretFile, year)
 
     // Retrieving data and wrangling
     println("Retrieving data...")

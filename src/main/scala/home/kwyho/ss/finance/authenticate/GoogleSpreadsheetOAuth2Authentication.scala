@@ -1,6 +1,6 @@
 package home.kwyho.ss.finance.authenticate
 
-import java.io.{InputStream, InputStreamReader}
+import java.io._
 import java.util
 
 import com.google.api.client.auth.oauth2.{TokenResponse, AuthorizationCodeFlow}
@@ -23,7 +23,7 @@ import scala.util.parsing.json._
 // Answer at bottom: http://stackoverflow.com/questions/12521385/how-to-authenticate-google-drive-without-requiring-the-user-to-copy-paste-auth-c
 object GoogleSpreadsheetOAuth2Authentication {
 
-  def login(username : String) : SpreadsheetService = {
+  def login(username : String, clientSecretJsonFile : File) : SpreadsheetService = {
     val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
     val REDIRECT_URI : String = "http://localhost"
 
@@ -32,9 +32,8 @@ object GoogleSpreadsheetOAuth2Authentication {
     val httpTransport : HttpTransport = new NetHttpTransport()
 
     // dealing Google JSON file
-    val jsonStream : InputStream = GoogleSpreadsheetOAuth2Authentication.getClass.getResourceAsStream("client_secret_32485935939-p43vo057gp5mdp9cu1k03qcfudk7lv2g.apps.googleusercontent.com.json")
-    val jsonStream1 : InputStream = GoogleSpreadsheetOAuth2Authentication.getClass.getResourceAsStream("client_secret_32485935939-p43vo057gp5mdp9cu1k03qcfudk7lv2g.apps.googleusercontent.com.json")
-    val jsonStr : String = Source.fromInputStream(jsonStream1)(Codec.UTF8).getLines().reduce((s1, s2) => s1+s2)
+//    val jsonStream1 : InputStream = GoogleSpreadsheetOAuth2Authentication.getClass.getResourceAsStream("client_secret_32485935939-p43vo057gp5mdp9cu1k03qcfudk7lv2g.apps.googleusercontent.com.json")
+    val jsonStr : String = Source.fromFile(clientSecretJsonFile)(Codec.UTF8).getLines().reduce((s1, s2) => s1+s2)
     val jsonObj : Any = JSON.parseFull(jsonStr)
     val jsonMap : Map[String, String] = (jsonObj match {
       case Some(m: Map[String, Map[String, String]]) => m.get("web").get
@@ -42,6 +41,7 @@ object GoogleSpreadsheetOAuth2Authentication {
     })
 
     // Google OAuth 2.0 authorization flow
+    val jsonStream : InputStream = new FileInputStream(clientSecretJsonFile)
     val clientsSecrets : GoogleClientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(jsonStream))
     val authorizationCodeFlow : AuthorizationCodeFlow = new GoogleAuthorizationCodeFlow.Builder(
       httpTransport, jsonFactory, clientsSecrets, SCOPES

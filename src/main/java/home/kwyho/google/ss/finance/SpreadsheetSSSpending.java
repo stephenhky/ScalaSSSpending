@@ -3,6 +3,7 @@ package home.kwyho.google.ss.finance;
 import home.kwyho.ss.finance.authenticate.GoogleSpreadsheetOAuth2Authentication;
 import home.kwyho.ss.finance.daoobj.SSSpendDAO;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -45,8 +46,8 @@ public class SpreadsheetSSSpending {
 		computeHashmap();
 	}
 	
-	public SpreadsheetSSSpending(String username, String year) throws IOException, ServiceException {
-		this(GoogleSpreadsheetOAuth2Authentication.login(username), year);
+	public SpreadsheetSSSpending(String username, File clientSecretFile, String year) throws IOException, ServiceException {
+		this(GoogleSpreadsheetOAuth2Authentication.login(username, clientSecretFile), year);
 	}
 	
 	public SpreadsheetService getService() {
