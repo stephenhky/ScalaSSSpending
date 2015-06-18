@@ -16,6 +16,7 @@ import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.util.ServiceException;
 
+@Deprecated
 public class SpreadsheetSSSpending {
 	private FeedURLFactory factory;
 	private SpreadsheetFeed spreadsheetFeed;
