@@ -32,17 +32,13 @@ object SSAnnualSpending {
 
     // Connecting to Google
     println("Connecting to Google...")
-//    val ssSpendServiceWrapper : SpreadsheetSSSpending = new SpreadsheetSSSpending(gmailAddress, clientSecretFile, year)
     val authService : SpreadsheetService = GoogleSpreadsheetOAuth2Authentication.login(gmailAddress, clientSecretFile)
     val ssSpendService : SSSpendingSpreadsheetService = new SSSpendingSpreadsheetService(authService, year)
 
     // Retrieving data and wrangling
     println("Retrieving data...")
-//    val spreadsheet : SpreadsheetEntry = ssSpendServiceWrapper.retrieveSSSpendingSpreadsheet()
     val spreadsheet : SpreadsheetEntry = ssSpendService currentSpreadsheet
     val wrangler : SSSpendingSpreadsheetWrangler = new SSSpendingSpreadsheetWrangler(spreadsheet)
-//    val monthlyEntries = SSSpendDAO.calendarMonths.map(
-//      month => wrangler getWorksheetSpendingData(ssSpendServiceWrapper getWorksheet(month)))
     val monthlyEntries = SSSpendDAO.calendarMonths.map(month => wrangler getWorksheetSpendingData( ssSpendService getWorksheet(month)))
 
     // Language processing
@@ -65,7 +61,6 @@ object SSAnnualSpending {
 
     // Writing summary files
     println("Updating Summary...")
-//    wrangler writeSummaryToGoogleSpreadsheet( ssSpendServiceWrapper getSummaryWorksheet, monthlyCategorizedSpendings)
     wrangler writeSummaryToGoogleSpreadsheet( ssSpendService getSummaryWorksheet(), monthlyCategorizedSpendings)
 
     println("Done.")
