@@ -13,15 +13,16 @@ import scala.collection.mutable
  * Created by hok1 on 6/18/15.
  */
 class SSSpendingSpreadsheetService(val service : SpreadsheetService, val year : String) {
-  val factory : FeedURLFactory = FeedURLFactory.getDefault
-  val spreadsheetFeed : SpreadsheetFeed = service.getFeed(factory.getSpreadsheetsFeedUrl, Class[SpreadsheetFeed])
-  val spreadsheetHashMap : Map[String, SpreadsheetEntry] = retrieveSSSpendingSpreadsheetHashMap()
-  val worksheetHashMap : Map[String, WorksheetEntry] = computeWorksheetHashMap(spreadsheetHashMap get(SSSpendDAO.yearHash.get(year).get) get)
+  val factory : FeedURLFactory = FeedURLFactory.getDefault()
+  val spreadsheetFeed : SpreadsheetFeed = service.getFeed(factory.getSpreadsheetsFeedUrl(), classOf[SpreadsheetFeed])
+  val spreadsheetHashMap : Map[String, SpreadsheetEntry] = computeSSSpendingSpreadsheetHashMap()
+  val currentSpreadsheet : SpreadsheetEntry = spreadsheetHashMap get(SSSpendDAO.yearHash.get(year).get) get
+  val worksheetHashMap : Map[String, WorksheetEntry] = computeWorksheetHashMap(currentSpreadsheet)
 
-  def retrieveSSSpendingSpreadsheetHashMap() : Map[String, SpreadsheetEntry] = {
+  def computeSSSpendingSpreadsheetHashMap() : Map[String, SpreadsheetEntry] = {
     val spreadsheets : mutable.Buffer[SpreadsheetEntry] = spreadsheetFeed.getEntries.asScala
     val spreadsheetHashMap : mutable.Map[String, SpreadsheetEntry] = mutable.Map[String, SpreadsheetEntry]()
-    spreadsheets.foreach( spreadsheetEntry => spreadsheetHashMap updated (spreadsheetEntry.getId, spreadsheetEntry) )
+    spreadsheets.foreach( spreadsheetEntry => spreadsheetHashMap put(spreadsheetEntry.getKey, spreadsheetEntry))
     spreadsheetHashMap.toMap
   }
 
@@ -29,8 +30,8 @@ class SSSpendingSpreadsheetService(val service : SpreadsheetService, val year : 
     val worksheetMutableMap : mutable.Map[String, WorksheetEntry] = mutable.Map[String, WorksheetEntry]()
     val worksheets : mutable.Buffer[WorksheetEntry] = spreadsheet.getWorksheets.asScala
     worksheets.foreach( worksheet => worksheet.getTitle.getPlainText match {
-      case "Summary" => { worksheetHashMap updated ("Summary", worksheet)}
-      case month : String => { if (SSSpendDAO.calendarMonths.contains(month)) worksheetMutableMap updated (month, worksheet)}
+      case "Summary" => {worksheetMutableMap put("Summary", worksheet)}
+      case month : String => {if (SSSpendDAO.calendarMonths.contains(month)) worksheetMutableMap put(month, worksheet)}
     })
     worksheetMutableMap.toMap
   }
