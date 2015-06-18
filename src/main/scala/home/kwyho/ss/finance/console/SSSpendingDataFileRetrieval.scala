@@ -5,7 +5,6 @@ import au.com.bytecode.opencsv.CSVWriter
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 import home.kwyho.ss.finance.authenticate.GoogleSpreadsheetOAuth2Authentication
 import home.kwyho.ss.finance.daoobj.SSSpendDAO
-import home.kwyho.google.ss.finance.SpreadsheetSSSpending
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry
 import home.kwyho.ss.finance.wrangler.{SSSpendingSpreadsheetService, SSSpendingSpreadsheetWrangler}
 import home.kwyho.ss.finance.analytics.CategoryNormalizer
