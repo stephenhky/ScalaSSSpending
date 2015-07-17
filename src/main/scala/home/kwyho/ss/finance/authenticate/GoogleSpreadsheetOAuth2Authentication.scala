@@ -24,15 +24,14 @@ import scala.util.parsing.json._
 // About reusing access token:
 //    http://stackoverflow.com/questions/12521385/how-to-authenticate-google-drive-without-requiring-the-user-to-copy-paste-auth-c
 object GoogleSpreadsheetOAuth2Authentication {
+  val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
+  val REDIRECT_URI : String = "http://localhost"
 
-  def login(username : String, clientSecretJsonFile : File) : SpreadsheetService = {
-    val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
-    val REDIRECT_URI : String = "http://localhost"
+  // define initial object
+  val jsonFactory : JsonFactory = new JacksonFactory()
+  val httpTransport : HttpTransport = new NetHttpTransport()
 
-    // define initial object
-    val jsonFactory : JsonFactory = new JacksonFactory()
-    val httpTransport : HttpTransport = new NetHttpTransport()
-
+  def getSecretFileJSONMap(clientSecretJsonFile : File) : Map[String, String] = {
     // dealing Google JSON file
     val jsonStr : String = Source.fromFile(clientSecretJsonFile)(Codec.UTF8).getLines().reduce((s1, s2) => s1+s2)
     val jsonObj : Any = JSON.parseFull(jsonStr)
@@ -40,22 +39,60 @@ object GoogleSpreadsheetOAuth2Authentication {
       case Some(m: Map[String, Map[String, String]]) => m.get("web").get
       case None => Map()
     })
+    jsonMap
+  }
 
+  def extractClientsSecrets(clientSecretJsonFile : File) : GoogleClientSecrets = {
     // Google OAuth 2.0 authorization flow
     val jsonStream : InputStream = new FileInputStream(clientSecretJsonFile)
     val clientsSecrets : GoogleClientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(jsonStream))
+
+    clientsSecrets
+  }
+
+  def retrieveNewCredential(clientsSecrets : GoogleClientSecrets, jsonMap : Map[String, String]) : GoogleCredential = {
+    // retrieve new credential
     val authorizationCodeFlow : AuthorizationCodeFlow = new GoogleAuthorizationCodeFlow.Builder(
       httpTransport, jsonFactory, clientsSecrets, SCOPES
     ).setAccessType("offline").setApprovalPrompt("auto").build()
     val url : String = authorizationCodeFlow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build()
-    println(url)
+
+    // ask user to open the browser with the printed url, and get the code
+    println("Open this in browser: "+url)
     var code: String = readLine("code = ? ")
     val response : TokenResponse = authorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute()
     val credential : GoogleCredential = new GoogleCredential.Builder().setTransport(httpTransport)
-                                          .setJsonFactory(jsonFactory)
-                                          .setClientSecrets(jsonMap("client_id"), jsonMap("client_secret"))
-                                          .build()
-                                          .setFromTokenResponse(response)
+      .setJsonFactory(jsonFactory)
+      .setClientSecrets(jsonMap("client_id"), jsonMap("client_secret"))
+      .build()
+      .setFromTokenResponse(response)
+    println("Access token = "+credential.getAccessToken)
+    println("Refresh token = "+credential.getRefreshToken)
+
+    credential
+  }
+
+  def reuseCredential(clientsSecrets : GoogleClientSecrets, jsonMap : Map[String, String],
+                       accessToken : String, refreshToken : String) : GoogleCredential = {
+    val credential : GoogleCredential = new GoogleCredential.Builder().setJsonFactory(jsonFactory)
+      .setTransport(httpTransport).setClientSecrets(jsonMap("client_id"), jsonMap("client_secret"))
+      .build()
+    credential.setAccessToken(accessToken)
+    credential.setRefreshToken(refreshToken)
+
+    credential
+  }
+
+  def login(username : String, clientSecretJsonFile : File,
+            accessToken : String = "", refreshToken : String = "") : SpreadsheetService = {
+
+    val clientSecrets : GoogleClientSecrets = extractClientsSecrets(clientSecretJsonFile)
+
+    val credential : GoogleCredential = if (accessToken.length==0 & refreshToken.length==0) {
+      retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
+    } else {
+      reuseCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile), accessToken, refreshToken)
+    }
 
     val service : SpreadsheetService = new SpreadsheetService("ScalaSSSpend")
     service.setOAuth2Credentials(credential)

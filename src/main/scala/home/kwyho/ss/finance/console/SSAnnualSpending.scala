@@ -28,10 +28,12 @@ object SSAnnualSpending {
     if (!SSSpendDAO.yearHash.contains(year)) {
       System.exit(1)
     }
+    val accessToken : String = readLine("Access token = ? ")
+    val refreshToken : String = readLine("Refresh token = ? ")
 
     // Connecting to Google
     println("Connecting to Google...")
-    val authService : SpreadsheetService = GoogleSpreadsheetOAuth2Authentication.login(gmailAddress, clientSecretFile)
+    val authService : SpreadsheetService = GoogleSpreadsheetOAuth2Authentication.login(gmailAddress, clientSecretFile, accessToken, refreshToken)
     val ssSpendService : SSSpendingSpreadsheetService = new SSSpendingSpreadsheetService(authService, year)
 
     // Retrieving data and wrangling
