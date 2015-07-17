@@ -31,6 +31,16 @@ object GoogleSpreadsheetOAuth2Authentication {
   val jsonFactory : JsonFactory = new JacksonFactory()
   val httpTransport : HttpTransport = new NetHttpTransport()
 
+  def getReusableTokenJSONMap(reusableJSONFile : File) : Map[String, String] = {
+    val jsonStr : String = Source.fromFile(reusableJSONFile)(Codec.UTF8).getLines().reduce((s1, s2) => s1+s2)
+    val jsonObj : Any = JSON.parseFull(jsonStr)
+    val tokenMap : Map[String, String] = (jsonObj match {
+      case Some(m: Map[String, String]) => m
+      case None => Map()
+    })
+    tokenMap
+  }
+
   def getSecretFileJSONMap(clientSecretJsonFile : File) : Map[String, String] = {
     // dealing Google JSON file
     val jsonStr : String = Source.fromFile(clientSecretJsonFile)(Codec.UTF8).getLines().reduce((s1, s2) => s1+s2)

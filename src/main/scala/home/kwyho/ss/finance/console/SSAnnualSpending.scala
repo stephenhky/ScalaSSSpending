@@ -8,7 +8,7 @@ import home.kwyho.ss.finance.daoobj.SSSpendDAO
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry
 import home.kwyho.ss.finance.wrangler.{SSSpendingSpreadsheetService, SSSpendingSpreadsheetWrangler}
 import home.kwyho.ss.finance.analytics.{CategoryNormalizer, SpendingAnalyzer}
-import scala.collection.mutable.Map
+import scala.collection.mutable
 
 /**
  * Created by hok1 on 6/20/14.
@@ -21,15 +21,26 @@ object SSAnnualSpending {
       System.exit(1)
     }
     val clientSecretFile : File = new File(args(0))
-
-    // User's input
-    val gmailAddress : String = readLine("GMail address = ? ")
-    val year : String = readLine("Year = ? ")
+    val year : String = if (args.length<2) readLine("Year = ? ") else args(1)
     if (!SSSpendDAO.yearHash.contains(year)) {
+      System.out.println("Data for year "+year+" does not exist.")
       System.exit(1)
     }
-    val accessToken : String = readLine("Access token = ? ")
-    val refreshToken : String = readLine("Refresh token = ? ")
+    val reusableTokenFile : File = if (args.length>=3) {new File(args(2))} else null
+    var gmailAddress : String = ""
+    var accessToken : String = ""
+    var refreshToken : String = ""
+    if (reusableTokenFile==null) {
+      // User's input
+      gmailAddress = readLine("GMail address = ? ")
+      accessToken = readLine("Access token = ? ")
+      refreshToken = readLine("Refresh token = ? ")
+    } else {
+      val reuseTokensMap : Map[String, String] = GoogleSpreadsheetOAuth2Authentication.getReusableTokenJSONMap(reusableTokenFile)
+      gmailAddress = reuseTokensMap("username")
+      accessToken = reuseTokensMap("accesstoken")
+      refreshToken = reuseTokensMap("refreshtoken")
+    }
 
     // Connecting to Google
     println("Connecting to Google...")
@@ -50,7 +61,7 @@ object SSAnnualSpending {
 
     // Outputting results
     println("Calculating...")
-    val monthlyCategorizedSpendings : List[Map[String, Double]] = (0 to SSSpendDAO.calendarMonths.size-1).map( monthIdx =>
+    val monthlyCategorizedSpendings : List[mutable.Map[String, Double]] = (0 to SSSpendDAO.calendarMonths.size-1).map( monthIdx =>
       SpendingAnalyzer.analyzeCategorizedSpending(monthlyEntries(monthIdx))).toList
     (0 to SSSpendDAO.calendarMonths.size-1).foreach( monthIdx => {
       println(SSSpendDAO.calendarMonths(monthIdx))
