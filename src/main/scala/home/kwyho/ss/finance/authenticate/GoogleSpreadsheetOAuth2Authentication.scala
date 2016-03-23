@@ -23,6 +23,10 @@ import scala.util.parsing.json._
 //
 // About reusing access token:
 //    http://stackoverflow.com/questions/12521385/how-to-authenticate-google-drive-without-requiring-the-user-to-copy-paste-auth-c
+//
+// Updated: Mar 23, 2016
+// Note that OAuth 2.0 code changed on March 3. Refer to:
+//   https://developers.google.com/api-client-library/java/google-api-java-client/oauth2#service_accounts
 object GoogleSpreadsheetOAuth2Authentication {
   val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
   val REDIRECT_URI : String = "http://localhost"
@@ -46,7 +50,8 @@ object GoogleSpreadsheetOAuth2Authentication {
     val jsonStr : String = Source.fromFile(clientSecretJsonFile)(Codec.UTF8).getLines().reduce((s1, s2) => s1+s2)
     val jsonObj : Any = JSON.parseFull(jsonStr)
     val jsonMap : Map[String, String] = (jsonObj match {
-      case Some(m: Map[String, Map[String, String]]) => m.get("web").get
+//      case Some(m: Map[String, Map[String, String]]) => m.get("web").get
+      case Some(m: Map[String, String]) => m
       case None => Map()
     })
     jsonMap
