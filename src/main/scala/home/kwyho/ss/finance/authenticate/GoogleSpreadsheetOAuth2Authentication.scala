@@ -3,37 +3,33 @@ package home.kwyho.ss.finance.authenticate
 import java.io._
 import java.util
 
-import com.google.api.client.auth.oauth2.{TokenResponse, AuthorizationCodeFlow}
-import com.google.api.client.googleapis.auth.oauth2.{GoogleCredential, GoogleAuthorizationCodeFlow, GoogleClientSecrets}
+import com.google.api.client.auth.oauth2.TokenResponse
+import com.google.api.client.googleapis.auth.oauth2.{GoogleAuthorizationCodeFlow, GoogleClientSecrets, GoogleCredential}
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.jackson.JacksonFactory
-
 import com.google.api.client.http.HttpTransport
-import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.gdata.client.spreadsheet.SpreadsheetService
+import com.google.api.services.plus.Plus
 
 import scala.io.{Codec, Source}
 import scala.util.parsing.json._
 
-// New way of authentication. Refer to
-// http://stackoverflow.com/questions/13257163/java-google-api-analytics-unable-to-obtain-new-access-token-using-refresh
-// https://github.com/google/google-api-java-client#Authorization_Code_Flow
-// Available scopes: https://developers.google.com/gmail/api/auth/scopes
-// Access token request: https://developers.google.com/identity/protocols/OAuth2InstalledApp
-//
-// About reusing access token:
-//    http://stackoverflow.com/questions/12521385/how-to-authenticate-google-drive-without-requiring-the-user-to-copy-paste-auth-c
 //
 // Updated: Mar 23, 2016
 // Note that OAuth 2.0 code changed on March 3. Refer to:
 //   https://developers.google.com/api-client-library/java/google-api-java-client/oauth2#service_accounts
+//
+// Updated: Mar 24, 2016
+//   https://developers.google.com/adwords/api/docs/guides/authentication#configure_and_use_a_client_library
+//   https://github.com/googleads/googleads-java-lib/wiki/Using-OAuth2.0
 object GoogleSpreadsheetOAuth2Authentication {
   val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
   val REDIRECT_URI : String = "http://localhost"
 
   // define initial object
-  val jsonFactory : JsonFactory = new JacksonFactory()
-  val httpTransport : HttpTransport = new NetHttpTransport()
+  val jsonFactory : JsonFactory = JacksonFactory.getDefaultInstance()
+  val httpTransport : HttpTransport = GoogleNetHttpTransport.newTrustedTransport()
 
   def getReusableTokenJSONMap(reusableJSONFile : File) : Map[String, String] = {
     val jsonStr : String = Source.fromFile(reusableJSONFile)(Codec.UTF8).getLines().reduce((s1, s2) => s1+s2)
@@ -67,15 +63,15 @@ object GoogleSpreadsheetOAuth2Authentication {
 
   def retrieveNewCredential(clientsSecrets : GoogleClientSecrets, jsonMap : Map[String, String]) : GoogleCredential = {
     // retrieve new credential
-    val authorizationCodeFlow : AuthorizationCodeFlow = new GoogleAuthorizationCodeFlow.Builder(
+    val flow : GoogleAuthorizationCodeFlow  = new GoogleAuthorizationCodeFlow.Builder(
       httpTransport, jsonFactory, clientsSecrets, SCOPES
     ).setAccessType("offline").setApprovalPrompt("auto").build()
-    val url : String = authorizationCodeFlow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build()
+    val url : String = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).build()
 
     // ask user to open the browser with the printed url, and get the code
     println("Open this in browser: "+url)
     var code: String = readLine("code = ? ")
-    val response : TokenResponse = authorizationCodeFlow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute()
+    val response : TokenResponse = flow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute()
     val credential : GoogleCredential = new GoogleCredential.Builder().setTransport(httpTransport)
       .setJsonFactory(jsonFactory)
       .setClientSecrets(jsonMap("client_id"), jsonMap("client_secret"))
@@ -100,14 +96,17 @@ object GoogleSpreadsheetOAuth2Authentication {
 
   def login(username : String, clientSecretJsonFile : File,
             accessToken : String = "", refreshToken : String = "") : SpreadsheetService = {
-
     val clientSecrets : GoogleClientSecrets = extractClientsSecrets(clientSecretJsonFile)
 
-    val credential : GoogleCredential = if (accessToken.length==0 & refreshToken.length==0) {
-      retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
-    } else {
-      reuseCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile), accessToken, refreshToken)
-    }
+//    var credential : GoogleCredential = if (accessToken.length==0 & refreshToken.length==0) {
+//      retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
+//    } else {
+//      reuseCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile), accessToken, refreshToken)
+//    }
+
+    val credential : GoogleCredential = retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
+    val plus : Plus = new Plus.Builder(httpTransport, jsonFactory, credential).
+      setApplicationName("ScalaSSSpend").build();
 
     val service : SpreadsheetService = new SpreadsheetService("ScalaSSSpend")
     service.setOAuth2Credentials(credential)
