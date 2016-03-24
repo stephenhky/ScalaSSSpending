@@ -26,6 +26,7 @@ import scala.util.parsing.json._
 object GoogleSpreadsheetOAuth2Authentication {
   val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
   val REDIRECT_URI : String = "http://localhost"
+//  val REDIRECT_URI : String = "urn:ietf:wg:oauth:2.0:oob"
 
   // define initial object
   val jsonFactory : JsonFactory = JacksonFactory.getDefaultInstance()
@@ -46,8 +47,8 @@ object GoogleSpreadsheetOAuth2Authentication {
     val jsonStr : String = Source.fromFile(clientSecretJsonFile)(Codec.UTF8).getLines().reduce((s1, s2) => s1+s2)
     val jsonObj : Any = JSON.parseFull(jsonStr)
     val jsonMap : Map[String, String] = (jsonObj match {
-//      case Some(m: Map[String, Map[String, String]]) => m.get("web").get
-      case Some(m: Map[String, String]) => m
+      case Some(m: Map[String, Map[String, String]]) => m.get("web").get
+//      case Some(m: Map[String, String]) => m
       case None => Map()
     })
     jsonMap
@@ -98,13 +99,13 @@ object GoogleSpreadsheetOAuth2Authentication {
             accessToken : String = "", refreshToken : String = "") : SpreadsheetService = {
     val clientSecrets : GoogleClientSecrets = extractClientsSecrets(clientSecretJsonFile)
 
-//    var credential : GoogleCredential = if (accessToken.length==0 & refreshToken.length==0) {
-//      retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
-//    } else {
-//      reuseCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile), accessToken, refreshToken)
-//    }
+    var credential : GoogleCredential = if (accessToken.length==0 & refreshToken.length==0) {
+      retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
+    } else {
+      reuseCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile), accessToken, refreshToken)
+    }
 
-    val credential : GoogleCredential = retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
+//    val credential : GoogleCredential = retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
     val plus : Plus = new Plus.Builder(httpTransport, jsonFactory, credential).
       setApplicationName("ScalaSSSpend").build();
 
