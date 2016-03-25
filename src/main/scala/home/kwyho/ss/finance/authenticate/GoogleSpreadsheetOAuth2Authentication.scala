@@ -10,7 +10,6 @@ import com.google.api.client.json.JsonFactory
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.gdata.client.spreadsheet.SpreadsheetService
-import com.google.api.services.plus.Plus
 
 import scala.io.{Codec, Source}
 import scala.util.parsing.json._
@@ -26,7 +25,6 @@ import scala.util.parsing.json._
 object GoogleSpreadsheetOAuth2Authentication {
   val SCOPES = util.Arrays.asList("https://spreadsheets.google.com/feeds", "https://docs.google.com/feeds")
   val REDIRECT_URI : String = "http://localhost"
-//  val REDIRECT_URI : String = "urn:ietf:wg:oauth:2.0:oob"
 
   // define initial object
   val jsonFactory : JsonFactory = JacksonFactory.getDefaultInstance()
@@ -48,7 +46,6 @@ object GoogleSpreadsheetOAuth2Authentication {
     val jsonObj : Any = JSON.parseFull(jsonStr)
     val jsonMap : Map[String, String] = (jsonObj match {
       case Some(m: Map[String, Map[String, String]]) => m.get("web").get
-//      case Some(m: Map[String, String]) => m
       case None => Map()
     })
     jsonMap
@@ -104,10 +101,6 @@ object GoogleSpreadsheetOAuth2Authentication {
     } else {
       reuseCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile), accessToken, refreshToken)
     }
-
-//    val credential : GoogleCredential = retrieveNewCredential(clientSecrets, getSecretFileJSONMap(clientSecretJsonFile))
-    val plus : Plus = new Plus.Builder(httpTransport, jsonFactory, credential).
-      setApplicationName("ScalaSSSpend").build();
 
     val service : SpreadsheetService = new SpreadsheetService("ScalaSSSpend")
     service.setOAuth2Credentials(credential)
