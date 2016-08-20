@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="lingpipe-4.1.0">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../Java Libraries/lingpipe-4.1.0/lingpipe-4.1.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
