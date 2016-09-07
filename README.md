@@ -1,0 +1,2 @@
+# ScalaSSSpending
+Personal finance handling.
