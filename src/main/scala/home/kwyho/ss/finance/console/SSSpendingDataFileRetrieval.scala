@@ -1,7 +1,6 @@
 package home.kwyho.ss.finance.console
 
 
-import au.com.bytecode.opencsv.CSVWriter
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 import home.kwyho.ss.finance.authenticate.GoogleSpreadsheetOAuth2Authentication
 import home.kwyho.ss.finance.daoobj.SSSpendDAO
@@ -9,6 +8,8 @@ import com.google.gdata.data.spreadsheet.SpreadsheetEntry
 import home.kwyho.ss.finance.wrangler.{SSSpendingSpreadsheetService, SSSpendingSpreadsheetWrangler}
 import home.kwyho.ss.finance.analytics.CategoryNormalizer
 import java.io.{File, FileWriter}
+
+import com.opencsv.CSVWriter
 
 /**
  * Created by hok1 on 7/7/14.
@@ -22,12 +23,12 @@ object SSSpendingDataFileRetrieval {
     val clientSecretFile : File = new File(args(0))
 
     // User's input
-    val gmailAddress : String = readLine("GMail address = ? ")
-    val year : String = readLine("Year = ? ")
+    val gmailAddress : String = scala.io.StdIn.readLine("GMail address = ? ")
+    val year : String = scala.io.StdIn.readLine("Year = ? ")
     if (!SSSpendDAO.yearHash.contains(year)) {
       System.exit(1)
     }
-    var outputfilename : String = readLine("Output filename = ? ")
+    var outputfilename : String = scala.io.StdIn.readLine("Output filename = ? ")
 
     // Connecting to Google
     println("Connecting to Google...")

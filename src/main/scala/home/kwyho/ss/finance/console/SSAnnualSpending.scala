@@ -23,7 +23,7 @@ object SSAnnualSpending {
       System.exit(1)
     }
     val clientSecretFile : File = new File(args(0))
-    val year : String = if (args.length<2) readLine("Year = ? ") else args(1)
+    val year : String = if (args.length<2) scala.io.StdIn.readLine("Year = ? ") else args(1)
     if (!SSSpendDAO.yearHash.contains(year)) {
       System.out.println("Data for year "+year+" does not exist.")
       System.exit(1)
@@ -34,9 +34,9 @@ object SSAnnualSpending {
     var refreshToken : String = ""
     if (reusableTokenFile==null) {
       // User's input
-      gmailAddress = readLine("GMail address = ? ")
-      accessToken = readLine("Access token = ? ")
-      refreshToken = readLine("Refresh token = ? ")
+      gmailAddress = scala.io.StdIn.readLine("GMail address = ? ")
+      accessToken = scala.io.StdIn.readLine("Access token = ? ")
+      refreshToken = scala.io.StdIn.readLine("Refresh token = ? ")
     } else {
       val reuseTokensMap : Map[String, String] = GoogleSpreadsheetOAuth2Authentication.getReusableTokenJSONMap(reusableTokenFile)
       gmailAddress = reuseTokensMap("username")

@@ -68,7 +68,7 @@ object GoogleSpreadsheetOAuth2Authentication {
 
     // ask user to open the browser with the printed url, and get the code
     println("Open this in browser: "+url)
-    var code: String = readLine("code = ? ")
+    var code: String = scala.io.StdIn.readLine("code = ? ")
     val response : TokenResponse = flow.newTokenRequest(code).setRedirectUri(REDIRECT_URI).execute()
     val credential : GoogleCredential = new GoogleCredential.Builder().setTransport(httpTransport)
       .setJsonFactory(jsonFactory)

@@ -7,14 +7,14 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="scala-sdk-2.11.8" level="application" />
     <orderEntry type="library" name="com.google.api.client:google-api-client-http:1.2.3-alpha" level="project" />
     <orderEntry type="library" name="com.google.api.client:google-api-client-auth-oauth2:1.2.3-alpha" level="project" />
     <orderEntry type="library" name="com.google.api-client:google-api-client-jackson2:1.22.0" level="project" />
-    <orderEntry type="library" name="gdata-core-1.0" level="project" />
-    <orderEntry type="library" name="scala-sdk-2.10.5" level="project" />
-    <orderEntry type="library" name="au.com.bytecode:opencsv:2.4" level="project" />
+    <orderEntry type="library" name="core-1.47.1" level="project" />
     <orderEntry type="library" name="edu.stanford.nlp:stanford-corenlp:3.6.0" level="project" />
     <orderEntry type="library" name="lingpipe-4.1.0" level="project" />
+    <orderEntry type="library" name="scala-sdk-2.11.8" level="application" />
+    <orderEntry type="library" name="scala-sdk-2.10.5" level="project" />
+    <orderEntry type="library" name="com.opencsv:opencsv:3.8" level="project" />
   </component>
 </module>

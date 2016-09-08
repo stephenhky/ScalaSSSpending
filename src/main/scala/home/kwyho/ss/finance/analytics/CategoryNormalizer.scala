@@ -1,14 +1,12 @@
 package home.kwyho.ss.finance.analytics
 
-import java.io.{FileReader, File}
-
-
-import au.com.bytecode.opencsv.CSVReader
+import java.io.{File, FileReader}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.Map
 import edu.stanford.nlp.tagger.maxent.MaxentTagger
 import com.aliasi.tokenizer.PorterStemmerTokenizerFactory
+import com.opencsv.CSVReader
 
 /**
  * Created by hok1 on 6/23/14.
