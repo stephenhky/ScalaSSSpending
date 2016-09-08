@@ -33,3 +33,6 @@ project/plugins/project/
 .idea/
 
 out/
+
+english-left3words-distsim.tagger
+english-left3words-distsim.tagger.props
